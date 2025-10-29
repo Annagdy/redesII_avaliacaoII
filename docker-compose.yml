@@ -1,0 +1,38 @@
+services:
+
+  server_sync:
+    build: 
+      context: .
+      dockerfile: Dockerfile.sync
+    ports:
+      - "3211:3211"
+    networks:
+      - rede_trabalho
+
+  server_async:
+    build: 
+      context: .
+      dockerfile: Dockerfile.async
+    ports:
+      - "3212:3212"
+    networks:
+      - rede_trabalho
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server_sync
+      - server_async
+    networks:
+      - rede_trabalho
+
+
+networks:
+  rede_trabalho:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 58.17.0.0/24
